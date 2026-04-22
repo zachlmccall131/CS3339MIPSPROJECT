@@ -1,0 +1,7 @@
+ADDI $1 $0 0
+ADDI $2 $0 10
+BEQ $1 $2 16
+ADD $3 $3 $1
+ADDI $1 $1 1
+J 4
+NOP
