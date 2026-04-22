@@ -1,24 +1,15 @@
 #pragma once
-#include <cstdint>
 #include <string>
-#include <array>
+#include <vector>
+#include <iostream>
 
-//Constants
 const int NUM_REGISTERS = 32;
 const int MEMORY_SIZE   = 256;
 
-//Register File
-int registers[NUM_REGISTERS] = {0};
+// ── Structs ────────────────────────────────────────────────────────────────
 
-//Memory 
-int memory[MEMORY_SIZE] = {0};
-
-//Program Counter 
-int PC = 0;
-
-//Instruction Struct 
 struct Instruction {
-    std::string opcode;  //"ADD", "LW", "BEQ"
+    std::string opcode;
     int rs        = 0;
     int rt        = 0;
     int rd        = 0;
@@ -27,7 +18,6 @@ struct Instruction {
     int address   = 0;
 };
 
-//Control Signals Struct 
 struct ControlSignals {
     bool RegWrite = false;
     bool MemRead  = false;
@@ -38,8 +28,6 @@ struct ControlSignals {
     bool Jump     = false;
     int  ALUOp    = 0;
 };
-
-//Pipeline Structs 
 
 struct IF_ID {
     Instruction instr;
@@ -66,12 +54,31 @@ struct MEM_WB {
     Instruction    instr;
     ControlSignals ctrl;
     int aluResult = 0;
-    int memData   = 0; 
+    int memData   = 0;
     int destReg   = 0;
 };
 
-//Pipeline State 
-IF_ID  if_id;
-ID_EX  id_ex;
-EX_MEM ex_mem;
-MEM_WB mem_wb;
+// ── Globals ────────────────────────────────────────────────────────────────
+
+extern int registers[NUM_REGISTERS];
+extern int memory[MEMORY_SIZE];
+extern int PC;
+extern bool debugMode;
+
+extern IF_ID  if_id;
+extern ID_EX  id_ex;
+extern EX_MEM ex_mem;
+extern MEM_WB mem_wb;
+
+// ── Functions ──────────────────────────────────────────────────────────────
+
+int            alu           (int a, int b, int aluOp);
+ControlSignals decodeControl (const std::string& opcode);
+
+void fetch      (const std::vector<Instruction>& program);
+void decode     ();
+void execute    ();
+void memAccess  ();
+void writeBack  ();
+void printState (int cycle);
+void printFinal ();
