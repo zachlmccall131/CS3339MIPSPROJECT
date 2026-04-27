@@ -1,8 +1,6 @@
 #include "mips.h"
 #include <iomanip>
 
-// ── Globals ────────────────────────────────────────────────────────────────
-
 int registers[NUM_REGISTERS] = {0};
 int memory[MEMORY_SIZE]      = {0};
 int PC                       = 0;
@@ -12,10 +10,7 @@ IF_ID  if_id;
 ID_EX  id_ex;
 EX_MEM ex_mem;
 MEM_WB mem_wb;
-
-// ── ALU ───────────────────────────────────────────────────────────────────
 // ALUOp: 0=ADD, 1=SUB, 2=MUL, 3=AND, 4=OR, 5=SLL, 6=SRL
-
 int alu(int a, int b, int aluOp) {
     switch (aluOp) {
         case 0: return a + b;
@@ -29,7 +24,7 @@ int alu(int a, int b, int aluOp) {
     }
 }
 
-// ── Control Unit ───────────────────────────────────────────────────────────
+//Control Unit 
 
 ControlSignals decodeControl(const std::string& opcode) {
     ControlSignals ctrl;
@@ -65,7 +60,7 @@ ControlSignals decodeControl(const std::string& opcode) {
     return ctrl;
 }
 
-// ── Fetch ──────────────────────────────────────────────────────────────────
+//Fetch 
 
 void fetch(const std::vector<Instruction>& program) {
     if (PC < (int)program.size()) {
@@ -77,7 +72,7 @@ void fetch(const std::vector<Instruction>& program) {
     }
 }
 
-// ── Decode ─────────────────────────────────────────────────────────────────
+//Decode 
 
 void decode() {
     if (if_id.instr.opcode.empty()) { id_ex = ID_EX(); return; }
@@ -89,7 +84,7 @@ void decode() {
     id_ex.readData2 = registers[if_id.instr.rt];
 }
 
-// ── Execute ────────────────────────────────────────────────────────────────
+//Execute 
 
 void execute() {
     if (id_ex.instr.opcode.empty()) { ex_mem = EX_MEM(); return; }
@@ -124,7 +119,7 @@ void execute() {
         PC = id_ex.instr.address;
 }
 
-// ── Memory Access ──────────────────────────────────────────────────────────
+//Memory Access
 
 void memAccess() {
     if (ex_mem.instr.opcode.empty()) { mem_wb = MEM_WB(); return; }
@@ -141,7 +136,7 @@ void memAccess() {
         memory[ex_mem.aluResult] = ex_mem.writeData;
 }
 
-// ── Write Back ─────────────────────────────────────────────────────────────
+//Write Back 
 
 void writeBack() {
     if (mem_wb.instr.opcode.empty()) return;
@@ -154,7 +149,7 @@ void writeBack() {
     }
 }
 
-// ── Debug Print ────────────────────────────────────────────────────────────
+//Debug Print 
 
 void printState(int cycle) {
     std::cout << "\n=== Cycle " << cycle << " ===\n";
@@ -180,7 +175,7 @@ void printState(int cycle) {
               << " ALUOp="    << id_ex.ctrl.ALUOp << "\n";
 }
 
-// ── Final Output ───────────────────────────────────────────────────────────
+//Final Output 
 
 void printFinal() {
     std::cout << "\n=== Final Register State ===\n";
