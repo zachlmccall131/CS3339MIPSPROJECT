@@ -7,7 +7,7 @@ The purpose of this project is to implement different MIPS instructions and demo
 
 Make sure you have g++ installed. From the project root directory, run:
 
-g++ -std=c++11 -o mips_sim main.cpp mips.cpp parser.cpp
+g++ c++11 -o mips_sim main.cpp mips.cpp parser.cpp
 
 ## How to Run
 
